@@ -1,9 +1,55 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Test Vizly</title>
-  </head>
-  <body>
-    <h1>🔥 Hello Vizly!</h1>
-  </body>
-</html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Editor - Vizly</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    #editorCanvas {
+      border: 2px dashed #ccc;
+      background: #fff;
+      width: 90%;
+      max-width: 600px;
+      height: 400px;
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .draggable {
+      position: absolute;
+      cursor: move;
+      font-weight: bold;
+    }
+
+    input[type="file"] {
+      margin: 1rem;
+    }
+
+    #controls {
+      text-align: center;
+    }
+
+    video {
+      display: block;
+      margin: 1rem auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🖌️ Vizly Editor</h1>
+
+  <div id="controls">
+    <input type="file" id="uploadImage" accept="image/*" />
+    <button onclick="addText()">Add Text</button>
+    <button onclick="saveAsImage()">Download</button>
+  </div>
+
+  <div id="editorCanvas"></div>
+
+  <hr style="margin: 2rem 0" />
+  <h2>🎬 Video Editor</h2>
+
+  <input type="file" id="videoUpload" accept="video/*" />
+  <video id="videoPlayer" width="90%" controls style="max-width: 600px; margin-top: 1rem; display: none;"></video>
