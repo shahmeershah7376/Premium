@@ -2,54 +2,241 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Editor - Vizly</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vizly Dashboard</title>
   <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+      font-family: sans-serif;
+      background: #f8f9fa;
+      color: #333;
+    }
+    .topbar {
+      background: #fff;
+      padding: 1rem;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sidebar {
+      width: 200px;
+      background: #1f1f1f;
+      color: white;
+      padding: 1rem;
+      height: calc(100vh - 60px);
+    }
+    .sidebar button {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      background: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .editor-area {
+      flex: 1;
+      padding: 1rem;
+      background: white;
+      height: calc(100vh - 120px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .timeline {
+      height: 60px;
+      background: #ddd;
+      border-top: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dashboard {
+      display: flex;
+    }
     #editorCanvas {
       border: 2px dashed #ccc;
-      background: #fff;
+      background: #fefefe;
       width: 90%;
       max-width: 600px;
-      height: 400px;
-      margin: 20px auto;
+      height: 300px;
       position: relative;
       overflow: hidden;
     }
-
     .draggable {
       position: absolute;
       cursor: move;
       font-weight: bold;
+      user-select: none;
     }
-
-    input[type="file"] {
-      margin: 1rem;
-    }
-
-    #controls {
-      text-align: center;
-    }
-
     video {
+      max-width: 100%;
+      height: auto;
       display: block;
-      margin: 1rem auto;
+    }
+    input[type="file"] {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <h1>🖌️ Vizly Editor</h1>
 
-  <div id="controls">
-    <input type="file" id="uploadImage" accept="image/*" />
-    <button onclick="addText()">Add Text</button>
-    <button onclick="saveAsImage()">Download</button>
+  <!-- Topbar -->
+  <div class="topbar">
+    <h1>🖌️ Vizly Dashboard</h1>
+    <div>
+      <button id="saveBtn">💾 Save</button>
+      <button id="exportBtn">📤 Export</button>
+    </div>
   </div>
 
-  <div id="editorCanvas"></div>
+  <!-- Main Layout -->
+  <div class="dashboard">
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <button id="addTextBtn">Add Text</button>
+      <button id="addImageBtn">Add Image</button>
+      <button id="addVideoBtn">Add Video</button>
+      <button id="addTransitionBtn">Add Transition</button>
+      <!-- Hidden file inputs -->
+      <input type="file" id="imageFileInput" accept="image/*" />
+      <input type="file" id="videoFileInput" accept="video/*" />
+    </div>
 
-  <hr style="margin: 2rem 0" />
-  <h2>🎬 Video Editor</h2>
+    <!-- Editor -->
+    <div class="editor-area">
+      <div id="editorCanvas"></div>
+    </div>
 
-  <input type="file" id="videoUpload" accept="video/*" />
-  <video id="videoPlayer" width="90%" controls style="max-width: 600px; margin-top: 1rem; display: none;"></video>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline">
+    🎞️ Timeline (Coming Soon)
+  </div>
+
+<script>
+  const canvas = document.getElementById("editorCanvas");
+
+  // Make elements draggable inside editorCanvas
+  function makeDraggable(el) {
+    let isDragging = false;
+    let offsetX, offsetY;
+
+    el.addEventListener("mousedown", function(e) {
+      isDragging = true;
+      offsetX = e.clientX - el.offsetLeft;
+      offsetY = e.clientY - el.offsetTop;
+      el.style.zIndex = 1000;
+    });
+
+    document.addEventListener("mousemove", function(e) {
+      if (isDragging) {
+        // Keep inside editorCanvas boundaries
+        let left = e.clientX - offsetX;
+        let top = e.clientY - offsetY;
+        const rect = canvas.getBoundingClientRect();
+        if(left < 0) left = 0;
+        if(top < 0) top = 0;
+        if(left + el.offsetWidth > rect.width) left = rect.width - el.offsetWidth;
+        if(top + el.offsetHeight > rect.height) top = rect.height - el.offsetHeight;
+
+        el.style.left = left + "px";
+        el.style.top = top + "px";
+      }
+    });
+
+    document.addEventListener("mouseup", function() {
+      isDragging = false;
+    });
+  }
+
+  // Add Text Button
+  document.getElementById("addTextBtn").addEventListener("click", () => {
+    const text = prompt("Enter text:");
+    if (text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      div.className = "draggable";
+      div.style.top = "10px";
+      div.style.left = "10px";
+      div.style.color = "#000";
+      div.style.background = "rgba(255,255,255,0.7)";
+      div.style.padding = "2px 5px";
+      div.style.borderRadius = "4px";
+      canvas.appendChild(div);
+      makeDraggable(div);
+    }
+  });
+
+  // Add Image Button triggers hidden file input click
+  document.getElementById("addImageBtn").addEventListener("click", () => {
+    document.getElementById("imageFileInput").click();
+  });
+
+  // On image file selected
+  document.getElementById("imageFileInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const img = document.createElement("img");
+      img.src = event.target.result;
+      img.className = "draggable";
+      img.style.top = "10px";
+      img.style.left = "10px";
+      img.style.maxWidth = "150px";
+      img.style.border = "1px solid #ccc";
+      canvas.appendChild(img);
+      makeDraggable(img);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = ""; // Reset input
+  });
+
+  // Add Video Button triggers hidden video file input click
+  document.getElementById("addVideoBtn").addEventListener("click", () => {
+    document.getElementById("videoFileInput").click();
+  });
+
+  // On video file selected
+  document.getElementById("videoFileInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const videoURL = URL.createObjectURL(file);
+    const video = document.createElement("video");
+    video.src = videoURL;
+    video.className = "draggable";
+    video.controls = true;
+    video.style.top = "10px";
+    video.style.left = "10px";
+    video.style.maxWidth = "200px";
+    canvas.appendChild(video);
+    makeDraggable(video);
+    e.target.value = ""; // Reset input
+  });
+
+  // Add Transition Button (just alert for now)
+  document.getElementById("addTransitionBtn").addEventListener("click", () => {
+    alert("Transition feature coming soon!");
+  });
+
+  // Save button (just alert)
+  document.getElementById("saveBtn").addEventListener("click", () => {
+    alert("Save feature coming soon!");
+  });
+
+  // Export button (just alert)
+  document.getElementById("exportBtn").addEventListener("click", () => {
+    alert("Export feature coming soon!");
+  });
+</script>
+
+</body>
+</html>
