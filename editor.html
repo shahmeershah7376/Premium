@@ -30,6 +30,11 @@
     #controls {
       text-align: center;
     }
+
+    video {
+      display: block;
+      margin: 1rem auto;
+    }
   </style>
 </head>
 <body>
@@ -43,10 +48,30 @@
 
   <div id="editorCanvas"></div>
 
+  <hr style="margin: 2rem 0" />
+  <h2>🎬 Video Editor</h2>
+
+  <input type="file" id="videoUpload" accept="video/*" />
+  <video id="videoPlayer" width="90%" controls style="max-width: 600px; margin-top: 1rem; display: none;"></video>
+
+  <!-- Scripts -->
   <script>
+    // VIDEO Upload + Play
+    document.getElementById("videoUpload").addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      const videoPlayer = document.getElementById("videoPlayer");
+
+      if (file) {
+        const videoURL = URL.createObjectURL(file);
+        videoPlayer.src = videoURL;
+        videoPlayer.style.display = "block";
+        videoPlayer.play();
+      }
+    });
+
     const canvas = document.getElementById("editorCanvas");
 
-    // Upload and display image
+    // IMAGE Upload + Show
     document.getElementById("uploadImage").addEventListener("change", function (e) {
       const file = e.target.files[0];
       const reader = new FileReader();
@@ -63,7 +88,7 @@
       reader.readAsDataURL(file);
     });
 
-    // Add text to canvas
+    // TEXT Add
     function addText() {
       const text = prompt("Enter text:");
       if (text) {
@@ -78,7 +103,7 @@
       }
     }
 
-    // Make elements draggable
+    // MAKE DRAGGABLE
     function makeDraggable(el) {
       let isDragging = false;
       let offsetX, offsetY;
@@ -102,7 +127,7 @@
       });
     }
 
-    // Save canvas as image
+    // SAVE AS IMAGE
     function saveAsImage() {
       html2canvas(canvas).then(canvasImage => {
         const link = document.createElement("a");
@@ -113,7 +138,7 @@
     }
   </script>
 
-  <!-- Add html2canvas via CDN -->
+  <!-- html2canvas library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
