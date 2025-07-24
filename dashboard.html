@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vizly Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: sans-serif;
+      background: #f8f9fa;
+      color: #333;
+    }
+
+    .topbar {
+      background: #fff;
+      padding: 1rem;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sidebar {
+      width: 200px;
+      background: #1f1f1f;
+      color: white;
+      padding: 1rem;
+      height: calc(100vh - 60px);
+    }
+
+    .sidebar button {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      background: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .editor-area {
+      flex: 1;
+      padding: 1rem;
+      background: white;
+      height: calc(100vh - 120px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timeline {
+      height: 60px;
+      background: #ddd;
+      border-top: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dashboard {
+      display: flex;
+    }
+
+    #editorCanvas {
+      border: 2px dashed #ccc;
+      background: #fefefe;
+      width: 90%;
+      max-width: 600px;
+      height: 300px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <h1>🖌️ Vizly Dashboard</h1>
+    <div>
+      <button>💾 Save</button>
+      <button>📤 Export</button>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="dashboard">
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <button>Add Text</button>
+      <button>Add Image</button>
+      <button>Add Video</button>
+      <button>Add Transition</button>
+    </div>
+
+    <!-- Editor -->
+    <div class="editor-area">
+      <div id="editorCanvas"></div>
+    </div>
+
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline">
+    🎞️ Timeline (Coming Soon)
+  </div>
+
+</body>
+</html>
