@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Editor - Vizly</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    #editorCanvas {
+      border: 2px dashed #ccc;
+      background: #fff;
+      width: 90%;
+      max-width: 600px;
+      height: 400px;
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .draggable {
+      position: absolute;
+      cursor: move;
+      font-weight: bold;
+    }
+
+    input[type="file"] {
+      margin: 1rem;
+    }
+
+    #controls {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>🖌️ Vizly Editor</h1>
+
+  <div id="controls">
+    <input type="file" id="uploadImage" accept="image/*" />
+    <button onclick="addText()">Add Text</button>
+    <button onclick="saveAsImage()">Download</button>
+  </div>
+
+  <div id="editorCanvas"></div>
+
+  <script>
+    const canvas = document.getElementById("editorCanvas");
+
+    // Upload and display image
+    document.getElementById("uploadImage").addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const img = document.createElement("img");
+        img.src = event.target.result;
+        img.className = "draggable";
+        img.style.top = "10px";
+        img.style.left = "10px";
+        img.style.maxWidth = "200px";
+        canvas.appendChild(img);
+        makeDraggable(img);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Add text to canvas
+    function addText() {
+      const text = prompt("Enter text:");
+      if (text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        div.className = "draggable";
+        div.style.top = "50px";
+        div.style.left = "50px";
+        div.style.color = "#000";
+        canvas.appendChild(div);
+        makeDraggable(div);
+      }
+    }
+
+    // Make elements draggable
+    function makeDraggable(el) {
+      let isDragging = false;
+      let offsetX, offsetY;
+
+      el.addEventListener("mousedown", function (e) {
+        isDragging = true;
+        offsetX = e.clientX - el.offsetLeft;
+        offsetY = e.clientY - el.offsetTop;
+        el.style.zIndex = 1000;
+      });
+
+      document.addEventListener("mousemove", function (e) {
+        if (isDragging) {
+          el.style.left = e.clientX - offsetX + "px";
+          el.style.top = e.clientY - offsetY + "px";
+        }
+      });
+
+      document.addEventListener("mouseup", function () {
+        isDragging = false;
+      });
+    }
+
+    // Save canvas as image
+    function saveAsImage() {
+      html2canvas(canvas).then(canvasImage => {
+        const link = document.createElement("a");
+        link.download = "vizly-design.png";
+        link.href = canvasImage.toDataURL();
+        link.click();
+      });
+    }
+  </script>
+
+  <!-- Add html2canvas via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>
